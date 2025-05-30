@@ -1,9 +1,3 @@
-<script setup>
-import MainSlider from '@/components/MainSlider.vue'
-import Advantages from '@/components/Advantages.vue'
-import Projects from '@/components/Projects.vue'
-</script>
-
 <template>
   <div class="home">
     <MainSlider />
@@ -12,8 +6,24 @@ import Projects from '@/components/Projects.vue'
   </div>
 </template>
 
-<style lang="scss" scoped>
+<script>
+import MainSlider from '@/components/MainSlider.vue'
+import Advantages from '@/components/Advantages.vue'
+import Projects from '@/components/Projects.vue'
+
+export default {
+  name: 'Home',
+  components: {
+    MainSlider,
+    Advantages,
+    Projects
+  }
+}
+</script>
+
+<style scoped>
 .home {
-  min-height: 100vh;
+  padding: 0;
+  background: #02040D;
 }
 </style> 

@@ -27,10 +27,4 @@ const router = createRouter({
   }
 })
 
-// Добавляем глобальную навигационную защиту
-router.beforeEach((to, from, next) => {
-  console.log('Navigation:', { from: from.path, to: to.path, params: to.params })
-  next()
-})
-
 export default router 

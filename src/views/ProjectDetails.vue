@@ -4,32 +4,35 @@
       <h1 class="project-details__title">{{ project.title }}</h1>
       
       <div class="project-details__content">
+        <!-- Описание проекта -->
         <div class="project-details__info">
-          <div class="project-details__text" v-if="project.description">
-            <div v-for="(block, index) in project.description.blocks" 
-                 :key="index"
-                 v-html="parseBlock(block)">
-            </div>
-          </div>
+          <div class="project-details__text" v-html="formattedDescription"></div>
         </div>
 
-        <div class="project-details__gallery">
+        <!-- Галерея -->
+        <div class="project-details__gallery" v-if="hasPhotos">
           <div class="project-details__main-image">
-            <img v-if="project.photos && project.photos.length"
-                 :src="`https://api.los-bio.ru/files/projects/${project.photos[currentPhotoIndex].name}`"
-                 :alt="project.title">
-            <button class="project-details__next-photo" @click="nextPhoto">
+            <img :src="currentPhotoUrl" :alt="project.title">
+            <button 
+              v-if="hasMultiplePhotos"
+              class="project-details__next-photo" 
+              @click="nextPhoto"
+            >
               Следующее фото
             </button>
           </div>
-          <div class="project-details__thumbnails" v-if="project.photos && project.photos.length > 1">
-            <div v-for="(photo, index) in project.photos" 
-                 :key="photo.id"
-                 class="project-details__thumbnail"
-                 :class="{ 'active': currentPhotoIndex === index }"
-                 @click="setCurrentPhoto(index)">
-              <img :src="`https://api.los-bio.ru/files/projects/${photo.name}`" 
-                   :alt="`${project.title} - фото ${index + 1}`">
+          <div 
+            v-if="hasMultiplePhotos" 
+            class="project-details__thumbnails"
+          >
+            <div 
+              v-for="(photo, index) in project.photos" 
+              :key="photo.id"
+              class="project-details__thumbnail"
+              :class="{ 'active': currentPhotoIndex === index }"
+              @click="setCurrentPhoto(index)"
+            >
+              <img :src="getPhotoUrl(photo)" :alt="project.title">
             </div>
           </div>
         </div>
@@ -44,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -52,24 +55,38 @@ const router = useRouter()
 const project = ref(null)
 const currentPhotoIndex = ref(0)
 
-const parseBlock = (block) => {
-  if (block.type === 'header') {
-    return `<h${block.data.level}>${block.data.text}</h${block.data.level}>`
-  }
-  if (block.type === 'paragraph') {
-    return `<p>${block.data.text}</p>`
-  }
-  if (block.type === 'list') {
-    const listItems = block.data.items.map(item => `<li>${item}</li>`).join('')
-    return block.data.style === 'ordered' 
-      ? `<ol>${listItems}</ol>` 
-      : `<ul>${listItems}</ul>`
-  }
-  return ''
-}
+// Вычисляемые свойства для упрощения шаблона
+const hasPhotos = computed(() => project.value?.photos?.length > 0)
+const hasMultiplePhotos = computed(() => project.value?.photos?.length > 1)
+const currentPhotoUrl = computed(() => 
+  hasPhotos.value 
+    ? getPhotoUrl(project.value.photos[currentPhotoIndex.value])
+    : ''
+)
+
+const formattedDescription = computed(() => {
+  if (!project.value?.description?.blocks) return ''
+  
+  return project.value.description.blocks.map(block => {
+    if (block.type === 'header') {
+      return `<h${block.data.level}>${block.data.text}</h${block.data.level}>`
+    }
+    if (block.type === 'paragraph') {
+      return `<p>${block.data.text}</p>`
+    }
+    if (block.type === 'list') {
+      const items = block.data.items.map(item => `<li>${item}</li>`).join('')
+      return block.data.style === 'ordered' ? `<ol>${items}</ol>` : `<ul>${items}</ul>`
+    }
+    return ''
+  }).join('')
+})
+
+// Вспомогательные функции
+const getPhotoUrl = (photo) => `https://api.los-bio.ru/files/projects/${photo.name}`
 
 const nextPhoto = () => {
-  if (!project.value?.photos?.length) return
+  if (!hasMultiplePhotos.value) return
   currentPhotoIndex.value = (currentPhotoIndex.value + 1) % project.value.photos.length
 }
 
@@ -77,23 +94,19 @@ const setCurrentPhoto = (index) => {
   currentPhotoIndex.value = index
 }
 
+// Загрузка данных
 const fetchProject = async () => {
   try {
     const response = await fetch(`https://api.los-bio.ru/projects/${route.params.slug}`)
-    if (!response.ok) {
-      throw new Error('Project not found')
-    }
-    const data = await response.json()
-    project.value = data
+    if (!response.ok) throw new Error('Project not found')
+    project.value = await response.json()
   } catch (error) {
     console.error('Error fetching project:', error)
     router.push('/')
   }
 }
 
-onMounted(() => {
-  fetchProject()
-})
+onMounted(fetchProject)
 </script>
 
 <style lang="scss" scoped>
@@ -121,7 +134,6 @@ onMounted(() => {
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.6;
     font-size: 1rem;
-    margin-bottom: 40px;
 
     :deep(h4) {
       color: #0066FF;
@@ -200,6 +212,13 @@ onMounted(() => {
   }
 }
 
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
 @media (max-width: 1200px) {
   .project-details {
     &__content {
@@ -220,6 +239,10 @@ onMounted(() => {
     &__thumbnails {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .container {
+    padding: 0 20px;
   }
 }
 </style> 
