@@ -1,13 +1,19 @@
 <script setup>
-import BannerComponent from '../components/Banner.vue'
-import AdvantagesComponent from '../components/Advantages.vue'
-import ProjectsComponent from '../components/Projects.vue'
+import MainSlider from '@/components/MainSlider.vue'
+import Advantages from '@/components/Advantages.vue'
+import Projects from '@/components/Projects.vue'
 </script>
 
 <template>
-  <main>
-    <BannerComponent />
-    <AdvantagesComponent />
-    <ProjectsComponent />
-  </main>
-</template> 
+  <div class="home">
+    <MainSlider />
+    <Advantages />
+    <Projects />
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.home {
+  min-height: 100vh;
+}
+</style> 

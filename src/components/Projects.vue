@@ -4,50 +4,61 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const projects = ref([
-  {
-    id: 1,
-    title: 'Очистные сооружения',
-    description: 'Монтаж локальных очистных сооружений для загородного дома',
-    imageUrl: '/img/image 36.jpg'
-  },
-  {
-    id: 2,
-    title: 'Канализационная насосная станция',
-    description: 'Установка КНС для многоквартирного дома',
-    imageUrl: '/img/image 37.jpg'
-  },
-  {
-    id: 3,
-    title: 'Промышленные очистные',
-    description: 'Проектирование и монтаж промышленных очистных сооружений',
-    imageUrl: '/img/image 38.jpg'
-  }
-]);
+const projects = ref([]);
 
-const navigateToDetails = (projectId) => {
-  console.log('Navigating to project:', projectId);
-  router.push(`/project/${projectId}`).catch(err => {
-    console.error('Navigation failed:', err);
-  });
+const parseEditorContent = (content) => {
+  if (!content || !content.blocks) return '';
+  return content.blocks
+    .map(block => block.data.text || '')
+    .join('\n')
+    .replace(/<\/?[^>]+(>|$)/g, ''); // Remove HTML tags
+};
+
+const fetchProjects = async () => {
+  try {
+    const response = await fetch('https://api.los-bio.ru/projects');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    projects.value = data.filter(project => project.published);
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    projects.value = [];
+  }
+};
+
+fetchProjects();
+
+const navigateToDetails = (project) => {
+  router.push(`/project/${project.slug}`);
 };
 </script>
 
 <template>
-  <section class="projects-section">
+  <section class="projects">
     <div class="container">
-      <h2 class="projects-section__title">Наши проекты</h2>
-      <div class="projects-section__grid">
-        <div v-for="project in projects" :key="project.id" class="project-card">
-          <div class="project-card__image-wrapper">
-            <img :src="project.imageUrl" :alt="project.title" class="project-card__image" />
+      <h2 class="projects__title">Наши проекты</h2>
+      <div class="projects__grid">
+        <div v-for="project in projects" 
+             :key="project.id" 
+             class="projects__item"
+             @click="navigateToDetails(project)">
+          <div class="projects__image">
+            <img v-if="project.photos && project.photos.length" 
+                 :src="`https://api.los-bio.ru/files/projects/${project.photos[0].name}`" 
+                 :alt="project.title">
           </div>
-          <div class="project-card__content">
-            <h3 class="project-card__title">{{ project.title }}</h3>
-            <p class="project-card__description">{{ project.description }}</p>
-            <router-link :to="`/project/${project.id}`" custom v-slot="{ navigate }">
-              <button @click="navigate" class="project-card__button">Подробнее</button>
-            </router-link>
+          <div class="projects__content">
+            <h3 class="projects__item-title">{{ project.title }}</h3>
+            <div class="projects__description">
+              {{ parseEditorContent(project.short_description) }}
+            </div>
+            <div class="projects__meta">
+              <div class="projects__meta-item" v-if="project.works">
+                <span class="projects__label">Тип работ:</span> {{ project.works }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -55,150 +66,129 @@ const navigateToDetails = (projectId) => {
   </section>
 </template>
 
-<style scoped>
-.projects-section {
-  background-color: #0B0C10;
-  padding: 80px 0;
-  margin-bottom: 80px;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+<style lang="scss" scoped>
+.projects {
+  padding: 100px 0;
+  background-color: #02040D;
+  color: #fff;
+
+  &__title {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  &__item {
+    background: #0B0C10;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-5px);
+      border-color: #0066FF;
+
+      .projects__image img {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &__content {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__item-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+
+  &__description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  &__meta {
+    margin-top: auto;
+  }
+
+  &__meta-item {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+  }
+
+  &__label {
+    color: #0066FF;
+    font-weight: 500;
+  }
 }
 
 .container {
   width: 100%;
-  max-width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 40px;
 }
 
-.projects-section__title {
-  font-size: 36px;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 48px;
-  color: #fff;
-}
-
-.projects-section__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.project-card {
-  background-color: #171A27;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-.project-card:hover {
-  transform: translateY(-5px);
-}
-
-.project-card__image-wrapper {
-  width: 100%;
-  height: 240px;
-  overflow: hidden;
-}
-
-.project-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.project-card:hover .project-card__image {
-  transform: scale(1.05);
-}
-
-.project-card__content {
-  padding: 24px;
-}
-
-.project-card__title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #fff;
-}
-
-.project-card__description {
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 20px;
-}
-
-.project-card__button {
-  background-color: transparent;
-  color: #0066FF;
-  border: 2px solid #0066FF;
-  padding: 8px 24px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.project-card__button:hover {
-  background-color: #0066FF;
-  color: #fff;
-}
-
-@media (max-width: 992px) {
-  .projects-section {
-    padding: 60px 0;
-  }
-
-  .projects-section__title {
-    font-size: 32px;
-    margin-bottom: 40px;
+@media (max-width: 1200px) {
+  .projects {
+    &__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 
 @media (max-width: 768px) {
-  .projects-section {
-    padding: 40px 0;
+  .projects {
+    padding: 60px 0;
+
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    &__content {
+      padding: 20px;
+    }
   }
 
-  .projects-section__grid {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .project-card__image-wrapper {
-    height: 200px;
-  }
-}
-
-@media (max-width: 576px) {
-  .projects-section {
-    padding: 30px 0;
-  }
-
-  .projects-section__title {
-    font-size: 28px;
-    margin-bottom: 30px;
-  }
-
-  .project-card__content {
-    padding: 20px;
-  }
-
-  .project-card__title {
-    font-size: 18px;
-  }
-
-  .project-card__description {
-    font-size: 14px;
+  .container {
+    padding: 0 20px;
   }
 }
 </style>

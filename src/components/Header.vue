@@ -36,25 +36,23 @@ import logoIcon from '@/assets/icons/logo.svg'
     <div class="header__main">
       <div class="container">
         <div class="header__content">
-          <a href="/" class="logo">
+          <router-link to="/" class="header__logo">
             <img :src="logoIcon" alt="ЛОС-БИО" />
-          </a>
-          <nav class="nav">
-            <ul class="nav__list">
-              <li><a href="#" class="nav__link">О компании</a></li>
-              <li><a href="#" class="nav__link">Проекты</a></li>
-              <li><a href="#" class="nav__link">Каталог</a></li>
-              <li><a href="#" class="nav__link">Контакты</a></li>
-            </ul>
+          </router-link>
+          <nav class="header__nav">
+            <router-link to="/" class="header__link">Главная</router-link>
+            <router-link to="/#advantages" class="header__link">Преимущества</router-link>
+            <router-link to="/#projects" class="header__link">Проекты</router-link>
+            <router-link to="/#contacts" class="header__link">Контакты</router-link>
           </nav>
-          <button class="contact-btn">Получить КП</button>
+          <button class="header__button">Получить КП</button>
         </div>
       </div>
     </div>
   </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   position: fixed;
   top: 0;
@@ -62,208 +60,189 @@ import logoIcon from '@/assets/icons/logo.svg'
   right: 0;
   z-index: 1000;
   background-color: #0b0c10;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-}
 
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
+  &__top {
+    background-color: #0D0F14;
+    padding: 10px 0;
+    font-size: 14px;
+  }
 
-.header__top {
-  background-color: #0D0F14;
-  padding: 10px 0;
-  font-size: 14px;
-  width: 100vw;
-}
+  &__top-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.header__top-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  &__contacts {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
 
-.header__contacts {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
+  &__address,
+  &__phone,
+  &__email {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
 
-.header__address,
-.header__phone,
-.header__email {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  transition: color 0.3s;
-}
+  &__icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.8;
+  }
 
-.header__phone:hover,
-.header__email:hover {
-  color: #0066FF;
-}
+  &__callback {
+    background: none;
+    border: none;
+    color: #0066FF;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
 
-.header__icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.8;
-}
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background: url('@/assets/icons/callback.svg') no-repeat center;
+      background-size: contain;
+    }
+  }
 
-.header__callback {
-  background: none;
-  border: none;
-  color: #0066FF;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0;
-}
+  &__main {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-.header__callback::before {
-  content: '';
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  background: url('@/assets/icons/callback.svg') no-repeat center;
-  background-size: contain;
-}
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+  }
 
-.header__main {
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  width: 100vw;
-}
+  &__logo {
+    display: block;
+    flex-shrink: 0;
 
-.header__content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-}
+    img {
+      height: 60px;
+      width: 240px;
+      object-fit: contain;
+    }
+  }
 
-.logo {
-  display: block;
-  flex-shrink: 0;
-}
+  &__nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
 
-.logo img {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-}
+  &__link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
 
-.nav {
-  flex-grow: 1;
-}
+    &:hover {
+      color: #0066FF;
+    }
+  }
 
-.nav__list {
-  display: flex;
-  gap: 30px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  justify-content: center;
-}
+  &__button {
+    background-color: #0066FF;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    white-space: nowrap;
 
-.nav__link {
-  color: #fff;
-  text-decoration: none;
-  font-size: 16px;
-  transition: color 0.3s;
-  white-space: nowrap;
-}
-
-.nav__link:hover {
-  color: #0066FF;
-}
-
-.contact-btn {
-  background-color: #0066FF;
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.contact-btn:hover {
-  background-color: #0052cc;
+    &:hover {
+      background-color: #0052cc;
+    }
+  }
 }
 
 @media (max-width: 1200px) {
-  .header__contacts {
-    gap: 20px;
+  .header {
+    &__contacts {
+      gap: 20px;
+    }
   }
 }
 
-@media (max-width: 992px) {
-  .header__top {
-    display: none;
-  }
+@media (max-width: 991px) {
+  .header {
+    &__top {
+      display: none;
+    }
 
-  .header__content {
-    gap: 20px;
-  }
+    &__content {
+      gap: 20px;
+    }
 
-  .nav__list {
-    gap: 20px;
+    &__nav {
+      gap: 20px;
+    }
   }
 }
 
 @media (max-width: 768px) {
-  .header__main {
-    padding: 15px 0;
-  }
+  .header {
+    &__main {
+      padding: 15px 0;
+    }
 
-  .header__content {
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
+    &__content {
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
 
-  .nav {
-    order: 3;
-    flex-basis: 100%;
-  }
+    &__nav {
+      order: 3;
+      flex-basis: 100%;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
 
-  .nav__list {
-    justify-content: space-between;
-  }
+    &__logo img {
+      height: 35px;
+    }
 
-  .logo img {
-    height: 35px;
+    &__button {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
   }
 }
 
 @media (max-width: 576px) {
-  .header__content {
-    gap: 15px;
-  }
+  .header {
+    &__content {
+      gap: 15px;
+    }
 
-  .nav__list {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-  }
+    &__nav {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
 
-  .logo img {
-    height: 30px;
-  }
-
-  .contact-btn {
-    padding: 10px 20px;
-    font-size: 14px;
+    &__logo img {
+      height: 30px;
+    }
   }
 }
 </style>

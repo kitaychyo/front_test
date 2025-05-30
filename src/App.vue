@@ -1,7 +1,9 @@
 <template>
   <div class="app">
     <HeaderComponent />
-    <router-view></router-view>
+    <main class="main">
+      <router-view></router-view>
+    </main>
     <FooterComponent />
   </div>
 </template>
@@ -12,70 +14,90 @@ import FooterComponent from './components/Footer.vue'
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  color-scheme: dark;
 }
 
-html, body {
-  width: 100%;
-  min-height: 100vh;
+* {
+  box-shadow: none;
+  box-sizing: border-box;
   margin: 0;
+  outline: none;
   padding: 0;
+}
+
+html {
   overflow-x: hidden;
+  background-color: #02040D;
 }
 
 body {
   font-family: 'Arial', sans-serif;
-  color: #fff;
-  background-color: #0b0c10;
   line-height: 1.6;
+  background-color: #02040D;
+  color: #fff;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  background-color: #02040D;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  flex: 1;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-section {
-  position: relative;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
+  width: min(100%, 1200px);
+  margin-inline: auto;
+  padding-inline: 15px;
+  box-sizing: border-box;
 }
 
 img {
   max-width: 100%;
   height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+section {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 16px;
+    width: min(100% - 32px, 1200px);
   }
 }
 </style>
+

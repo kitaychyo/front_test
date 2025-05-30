@@ -1,128 +1,198 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import icon1 from '@/assets/icons/accounting-1.svg'
-import icon2 from '@/assets/icons/kprod-1.svg'
-import icon3 from '@/assets/icons/Union.svg'
-import icon4 from '@/assets/icons/advantages-icon-4.svg'
-
-const advantages = ref([
-  {
-    iconUrl: icon1,
-    title: "Оперативность расчётов",
-    description: "Рассчитываем стоимость производства необходимого вам оборудования в течение нескольких часов после заявки"
-  },
-  {
-    iconUrl: icon2,
-    title: "Производство полного цикла",
-    description: "Рассчитываем стоимость производства необходимого вам оборудования в течение нескольких часов после заявки"
-  },
-  {
-    iconUrl: icon3,
-    title: "Большой опыт работы",
-    description: "Рассчитываем стоимость производства необходимого вам оборудования в течение нескольких часов после заявки"
-  },
-  {
-    iconUrl: icon4,
-    title: "Полное соответствие чертежам",
-    description: "Рассчитываем стоимость производства необходимого вам оборудования в течение нескольких часов после заявки"
-  }
-]);
-</script>
-
 <template>
-  <section class="advantages-section">
+  <section class="advantages">
     <div class="container">
-      <h2 class="advantages-section__title">Наши преимущества</h2>
-      <div class="advantages-section__grid">
-        <div class="advantage-card" v-for="(advantage, index) in advantages" :key="index">
-          <div class="advantage-card__icon-wrapper">
-            <img :src="advantage.iconUrl" :alt="advantage.title" class="advantage-card__icon" />
+      <h2 class="advantages__title">Преимущества</h2>
+      <div class="advantages__grid">
+        <div v-for="advantage in advantages" :key="advantage.id" class="advantages__item">
+          <div class="advantages__icon">
+            <img :src="parseAdvantageData(advantage.value).icon" :alt="parseAdvantageData(advantage.value).title">
           </div>
-          <h3 class="advantage-card__title">{{ advantage.title }}</h3>
-          <p class="advantage-card__description">{{ advantage.description }}</p>
+          <h3 class="advantages__item-title">{{ parseAdvantageData(advantage.value).title }}</h3>
+          <p class="advantages__item-text">{{ parseAdvantageData(advantage.value).description }}</p>
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<style scoped>
-.advantages-section {
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const advantages = ref([])
+
+const parseAdvantageData = (value) => {
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch (error) {
+      console.error('Error parsing advantage data:', error)
+      return {
+        title: '',
+        description: '',
+        icon: ''
+      }
+    }
+  }
+  return value
+}
+
+const fetchAdvantages = async () => {
+  try {
+    const response = await fetch('https://api.los-bio.ru/info/group/advantages')
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json()
+    advantages.value = data
+  } catch (error) {
+    console.error('Error fetching advantages:', error)
+    advantages.value = []
+  }
+}
+
+onMounted(() => {
+  fetchAdvantages()
+})
+</script>
+
+<style lang="scss" scoped>
+.advantages {
+  padding: 100px 0;
   background-color: #0B0C10;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  color: #fff;
+
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 30px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.08);
+
+      .advantages__icon {
+        color: #0066FF;
+        background: rgba(0, 102, 255, 0.1);
+      }
+    }
+  }
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+
+    img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+  }
+
+  &__item-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+
+  &__item-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+  }
 }
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 40px;
 }
 
-.advantages-section__title {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: clamp(2.5rem, 5vh, 3.5rem);
-  color: #fff;
+@media (max-width: 1200px) {
+  .advantages {
+    padding: 80px 0;
+
+    &__grid {
+      gap: 20px;
+    }
+  }
 }
 
-.advantages-section__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: clamp(1.5rem, 3vw, 2rem);
-}
+@media (max-width: 991px) {
+  .advantages {
+    padding: 60px 0;
 
-.advantage-card {
-  background-color: #171A27;
-  border-radius: 8px;
-  padding: clamp(1.5rem, 3vh, 2rem);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    &__title {
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
 
-.advantage-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 102, 255, 0.1);
-}
+    &__item {
+      padding: 25px;
+    }
 
-.advantage-card__icon-wrapper {
-  margin-bottom: 1.5rem;
-  height: 48px;
-  display: flex;
-  align-items: center;
-}
+    &__icon {
+      width: 56px;
+      height: 56px;
 
-.advantage-card__icon {
-  max-height: 100%;
-  width: auto;
-}
+      img {
+        width: 32px;
+        height: 32px;
+      }
+    }
 
-.advantage-card__title {
-  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: #fff;
-}
-
-.advantage-card__description {
-  font-size: clamp(0.875rem, 2vw, 0.95rem);
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.5;
+    &__item-title {
+      font-size: 1.25rem;
+    }
+  }
 }
 
 @media (max-width: 768px) {
-  .advantages-section__grid {
-    grid-template-columns: 1fr;
-    max-width: 600px;
+  .advantages {
+    &__grid {
+      grid-template-columns: 1fr;
+      max-width: 600px;
+    }
+
+    &__item {
+      text-align: center;
+
+      &:hover {
+        transform: none;
+      }
+    }
+
+    &__icon {
+      margin: 0 auto 20px;
+    }
+  }
+
+  .container {
+    padding: 0 20px;
   }
 }
 </style>

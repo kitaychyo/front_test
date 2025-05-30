@@ -13,7 +13,7 @@ const scrollToTop = () => {
 </script>
 
 <template>
-  <footer class="site-footer">
+  <footer class="footer">
     <div class="container">
       <div class="footer__content">
         <div class="footer__column footer__column--logo">
@@ -25,10 +25,10 @@ const scrollToTop = () => {
         <div class="footer__column footer__column--nav">
           <h4 class="footer__heading">КОМПАНИЯ</h4>
           <ul class="footer__nav-list">
-            <li><a href="#about">О компании</a></li>
-            <li><a href="#projects">Проекты</a></li>
-            <li><a href="#catalog">Каталог</a></li>
-            <li><a href="#contacts">Контакты</a></li>
+            <li><router-link to="/">Главная</router-link></li>
+            <li><router-link to="/#advantages">Преимущества</router-link></li>
+            <li><router-link to="/#projects">Проекты</router-link></li>
+            <li><router-link to="/#contacts">Контакты</router-link></li>
           </ul>
         </div>
 
@@ -49,186 +49,172 @@ const scrollToTop = () => {
           <ul class="footer__contact-list">
             <li>
               <img :src="phoneIcon" alt="Телефон" class="footer__contact-icon" />
-              <a href="tel:+79992124212">+7 (999) 212-42-12</a>
+              <a href="tel:+73912092557">+7 (391) 209 57-57</a>
             </li>
             <li>
               <img :src="phoneIcon" alt="Телефон" class="footer__contact-icon" />
-              <a href="tel:+79991231245">+7 (999) 123-12-45</a>
+              <a href="tel:+73912155433">+7 (391) 215 54-33</a>
             </li>
             <li>
               <img :src="emailIcon" alt="Email" class="footer__contact-icon" />
-              <a href="mailto:info@los-bio.ru">info@los-bio.ru</a>
+              <a href="mailto:los-bio@mail.ru">los-bio@mail.ru</a>
             </li>
-             <li>
+            <li>
               <img :src="locationIcon" alt="Адрес" class="footer__contact-icon" />
-              <span>г. Санкт-Петербург, ул. Промышленная д.5</span>
+              <span>г. Красноярск, ул. Телевизорная 1, стр. 14, оф. 204</span>
             </li>
           </ul>
-          <button class="footer__callback-button">Заказать звонок</button>
+          <button class="footer__callback-button" @click="scrollToTop">Заказать звонок</button>
         </div>
       </div>
     </div>
   </footer>
 </template>
 
-<style scoped>
-.site-footer {
+<style lang="scss" scoped>
+.footer {
   background-color: #171A27;
   color: rgba(255, 255, 255, 0.7);
-  padding-top: clamp(2.5rem, 6vh, 4rem);
-  padding-bottom: clamp(2.5rem, 6vh, 4rem);
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  padding: 4rem 0;
+
+  &__content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 3rem;
+    align-items: start;
+  }
+
+  &__column {
+    &--logo {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  &__logo {
+    max-width: 240px;
+    height: 60px;
+    object-fit: contain;
+  }
+
+  &__company-info {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+    max-width: 250px;
+  }
+
+  &__copy {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: auto;
+  }
+
+  &__heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  &__nav-list,
+  &__contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  &__nav-list a,
+  &__contact-list a,
+  &__contact-list span {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #0066FF;
+    }
+  }
+
+  &__contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__contact-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+  }
+
+  &__callback-button {
+    background-color: #0066FF;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1.5rem;
+    text-transform: uppercase;
+
+    &:hover {
+      background-color: #0052cc;
+    }
+  }
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  width: 100%;
-}
+@media (max-width: 991px) {
+  .footer {
+    padding: 3rem 0;
 
-.footer__content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  align-items: start;
-}
-
-.footer__column--logo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.footer__logo {
-  max-width: 150px;
-  height: auto;
-  margin-bottom: 0.5rem;
-}
-
-.footer__company-info {
-  font-size: clamp(0.8rem, 1.8vw, 0.85rem);
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.4;
-  max-width: 250px;
-}
-
-.footer__copy {
-  font-size: clamp(0.75rem, 1.6vw, 0.8rem);
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: auto;
-}
-
-.footer__heading {
-  font-size: clamp(1rem, 2.2vw, 1.15rem);
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 1.25rem;
-  text-transform: uppercase;
-}
-
-.footer__nav-list,
-.footer__contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.footer__nav-list a,
-.footer__contact-list a,
-.footer__contact-list span {
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  font-size: clamp(0.85rem, 2vw, 0.95rem);
-  transition: color 0.3s ease;
-}
-
-.footer__nav-list a:hover,
-.footer__contact-list a:hover {
-  color: #0066FF;
-}
-
-.footer__contact-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.footer__contact-icon {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
-}
-
-.footer__callback-button {
-  background-color: #0066FF;
-  color: #fff;
-  border: none;
-  padding: clamp(0.6rem, 1.2vw, 0.75rem) clamp(1.2rem, 2.5vw, 1.5rem);
-  border-radius: 4px;
-  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1.5rem;
-  text-transform: uppercase;
-  display: inline-block;
-}
-
-.footer__callback-button:hover {
-  background-color: #0052cc;
+    &__content {
+      gap: 2rem;
+    }
+  }
 }
 
 @media (max-width: 768px) {
-  .footer__content {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-  }
-  
-  .footer__column--logo {
-    grid-column: 1 / -1;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .footer__copy {
-    margin-top: 1rem;
-  }
-  .footer__column--contacts {
-    align-items: center;
-    text-align: center;
-  }
-  .footer__contact-list li {
-    justify-content: center;
+  .footer {
+    &__content {
+      grid-template-columns: 1fr;
+    }
+
+    &__column {
+      text-align: center;
+
+      &--logo {
+        align-items: center;
+      }
+    }
+
+    &__company-info {
+      max-width: 100%;
+    }
+
+    &__contact-list li {
+      justify-content: center;
+    }
   }
 }
 
-@media (max-width: 480px) {
-  .footer__content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  .footer__column {
-    align-items: center;
-  }
-  .footer__nav-list,
-  .footer__contact-list {
-    align-items: center;
-  }
-  .footer__contact-list li {
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-  .footer__heading {
-    margin-bottom: 0.75rem;
+@media (max-width: 576px) {
+  .footer {
+    padding: 2rem 0;
+
+    &__contact-list li {
+      flex-direction: column;
+      gap: 0.3rem;
+    }
   }
 }
 </style>
