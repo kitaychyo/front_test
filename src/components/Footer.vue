@@ -80,11 +80,11 @@ export default {
             <span class="material-icons">mail</span>
             los-bio@mail.ru
           </a>
-          <a href="#" class="footer__callback">
+          <router-link to="/callback" class="footer__callback">
             <span class="material-icons">phone_callback</span>
             Заказать звонок
-          </a>
-          <a href="#" class="footer__cta">Получить КП</a>
+          </router-link>
+          <router-link to="/quote" class="footer__cta">Получить КП</router-link>
         </div>
       </div>
     </div>

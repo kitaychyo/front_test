@@ -136,7 +136,7 @@ onMounted(fetchProject)
     font-size: 1rem;
 
     :deep(h4) {
-      color: #0066FF;
+      color: #E0FFFF;
       font-size: 1.1rem;
       margin: 20px 0 10px;
     }

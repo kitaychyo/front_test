@@ -17,9 +17,9 @@
           <div class="main-slider__content">
             <h1 class="main-slider__title">{{ parseSlideData(slide.value).title }}</h1>
             <p class="main-slider__description">{{ parseSlideData(slide.value).description }}</p>
-            <a :href="parseSlideData(slide.value).link" class="main-slider__button">
+            <router-link :to="parseSlideData(slide.value).link" class="main-slider__button">
               {{ parseSlideData(slide.value).btnText || 'Перейти в каталог' }}
-            </a>
+            </router-link>
           </div>
           <div class="main-slider__image-wrapper">
             <img 
@@ -62,7 +62,7 @@ const parseSlideData = (value) => {
       return {
         title: parsed.title || '',
         description: parsed.description || '',
-        link: parsed.link || '#',
+        link: parsed.link?.startsWith('/') ? parsed.link : '/catalog',
         btnText: parsed.btnText || 'Подробнее',
         image: parsed.image || [],
         sort: parseInt(parsed.sort) || 0
@@ -72,7 +72,7 @@ const parseSlideData = (value) => {
       return {
         title: '',
         description: '',
-        link: '#',
+        link: '/catalog',
         btnText: 'Подробнее',
         image: [],
         sort: 0
@@ -108,6 +108,12 @@ const fetchSlides = async () => {
   }
 }
 
+const currentSlideTitle = computed(() => {
+  if (slides.value.length === 0) return 'Слайдер'
+  const firstSlide = slides.value[0]
+  return parseSlideData(firstSlide.value).title || 'Слайдер'
+})
+
 onMounted(() => {
   fetchSlides()
 })
@@ -117,10 +123,10 @@ onMounted(() => {
 .main-slider {
   position: relative;
   background-color: #02040D;
-  padding: clamp(40px, 8vh, 80px) 0;
+  padding: 0 0 clamp(40px, 8vh, 80px) 0;
   min-height: calc(100vh - 80px);
   overflow: hidden;
-  margin-top: 80px;
+  margin-top: 120px;
 
   &__container {
     display: flex;
@@ -174,6 +180,17 @@ onMounted(() => {
 
     &:hover {
       background-color: #0052cc;
+    }
+
+    &.disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.6;
+
+      &:hover {
+        background-color: #cccccc;
+      }
     }
   }
 

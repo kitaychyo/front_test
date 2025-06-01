@@ -8,7 +8,7 @@ import logoIcon from '@/assets/icons/logo.svg'
       <div class="container">
         <div class="header__top-content">
           <div class="header__contacts">
-            <a href="#" class="header__contact">
+            <span class="header__contact">
               <i class="header__icon">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 14.4C4.48 14.4 1.6 11.52 1.6 8C1.6 4.48 4.48 1.6 8 1.6C11.52 1.6 14.4 4.48 14.4 8C14.4 11.52 11.52 14.4 8 14.4Z" fill="#0066FF"/>
@@ -16,7 +16,7 @@ import logoIcon from '@/assets/icons/logo.svg'
                 </svg>
               </i>
               г.Красноярск, ул. Телевизорная 1 стр. 16, оф. 204
-            </a>
+            </span>
             <a href="tel:+73912295757" class="header__contact">
               <i class="header__icon">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -42,7 +42,7 @@ import logoIcon from '@/assets/icons/logo.svg'
               los-bio@mail.ru
             </a>
           </div>
-          <a href="#" class="header__callback">Заказать звонок</a>
+          <router-link to="/callback" class="header__callback">Заказать звонок</router-link>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@ import logoIcon from '@/assets/icons/logo.svg'
             <router-link to="/contacts" class="header__nav-link">Контакты</router-link>
           </nav>
 
-          <a href="#" class="header__cta">Получить КП</a>
+          <router-link to="/quote" class="header__cta">Получить КП</router-link>
         </div>
       </div>
     </div>
